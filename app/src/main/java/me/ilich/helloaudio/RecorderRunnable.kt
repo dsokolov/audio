@@ -9,7 +9,7 @@ class RecorderRunnable(
         val sampleRate: Int,
         val channels: Int,
         val encoding: Int,
-        val onData: (ShortArray, Int) -> (Unit)
+        val onData: (FloatArray, Int) -> (Unit)
 ) : Runnable {
 
     var working = true
@@ -35,12 +35,12 @@ class RecorderRunnable(
             return
         }
 
-        val buffer = ShortArray(bufferSize)
+        val buffer = FloatArray(bufferSize)
 
         audio.startRecording()
         Log.v("Sokolov", "start")
         while (working) {
-            val readed = audio.read(buffer, 0, bufferSize)
+            val readed = audio.read(buffer, 0, bufferSize, AudioRecord.READ_BLOCKING)
             when (readed) {
                 AudioRecord.ERROR_INVALID_OPERATION -> Log.w("Sokolov", "ERROR_INVALID_OPERATION")
                 AudioRecord.ERROR_BAD_VALUE -> Log.w("Sokolov", "ERROR_BAD_VALUE")

@@ -9,7 +9,7 @@ class PlayerRunnable(
         val sampleRate: Int,
         val channels: Int,
         val encoding: Int,
-        val onData: (ShortArray) -> (Int)
+        val onData: (FloatArray) -> (Int)
 ) : Runnable {
 
     override fun run() {
@@ -17,11 +17,11 @@ class PlayerRunnable(
         val audioTrack = AudioTrack(
                 AudioManager.STREAM_MUSIC, sampleRate, channels, encoding, bufferSize, AudioTrack.MODE_STREAM)
         audioTrack.play()
-        val buffer = ShortArray(bufferSize)
+        val buffer = FloatArray(bufferSize)
 
         var readed = onData(buffer)
         while (readed != 0) {
-            audioTrack.write(buffer, 0, readed)
+            audioTrack.write(buffer, 0, readed, AudioTrack.WRITE_BLOCKING)
             readed = onData(buffer)
         }
         audioTrack.release()
